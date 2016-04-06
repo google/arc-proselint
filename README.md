@@ -1,6 +1,6 @@
 # prose-lint for arc
 
-prose-lint is a lint engine for use with [Phabricator](phabricator.org)'s `arc` command line tool.
+prose-lint is a lint engine for use with [Phabricator](http://phabricator.org)'s `arc` command line tool.
 It uses the open source [proselint](http://proselint.com/) tool.
 
 ## Features
