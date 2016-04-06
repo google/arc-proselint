@@ -19,8 +19,6 @@
 /** Uses proselint to lint text */
 final class ProseLinter extends ArcanistExternalLinter {
 
-  private $ignoredChecks;
-
   public function getInfoName() {
     return 'proselint';
   }
@@ -39,24 +37,6 @@ final class ProseLinter extends ArcanistExternalLinter {
 
   public function getLinterConfigurationName() {
     return 'prose';
-  }
-
-  public function getLinterConfigurationOptions() {
-    return parent::getLinterConfigurationOptions() + array(
-      'ignored-checks' => array(
-        'type' => 'optional list<string>',
-        'help' => 'A list of options to disable',
-      ),
-    );
-  }
-
-  public function setLinterConfigurationValue($key, $value) {
-    switch ($key) {
-      case 'ignored-checks':
-        $this->ignoredChecks = $value;
-        return;
-    }
-    parent::setLinterConfigurationValue($key, $value);
   }
 
   public function getDefaultBinary() {
