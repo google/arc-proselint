@@ -19,8 +19,6 @@
 /** Uses proselint to lint text */
 final class ProseLinter extends ArcanistExternalLinter {
 
-  private $ignoredChecks;
-
   public function getInfoName() {
     return 'proselint';
   }
@@ -41,24 +39,6 @@ final class ProseLinter extends ArcanistExternalLinter {
     return 'prose';
   }
 
-  public function getLinterConfigurationOptions() {
-    return parent::getLinterConfigurationOptions() + array(
-      'ignored-checks' => array(
-        'type' => 'optional list<string>',
-        'help' => 'A list of options to disable',
-      ),
-    );
-  }
-
-  public function setLinterConfigurationValue($key, $value) {
-    switch ($key) {
-      case 'ignored-checks':
-        $this->ignoredChecks = $value;
-        return;
-    }
-    parent::setLinterConfigurationValue($key, $value);
-  }
-
   public function getDefaultBinary() {
     return 'proselint';
   }
@@ -68,7 +48,7 @@ final class ProseLinter extends ArcanistExternalLinter {
   }
 
   public function shouldExpectCommandErrors() {
-    return false;
+    return true;
   }
 
   protected function getMandatoryFlags() {
@@ -77,8 +57,16 @@ final class ProseLinter extends ArcanistExternalLinter {
     );
   }
 
+  protected function getDefaultMessageSeverity($code) {
+    return ArcanistLintSeverity::SEVERITY_ADVICE;
+  }
+
+  protected function canCustomizeLintSeverities() {
+    return true;
+  }
+
   protected function parseLinterOutput($path, $err, $stdout, $stderr) {
-    $ok = ($err == 0);
+    $ok = ($err == 0 || $err == 1); // proselint returns 1 if linter warnings were detected.
 
     if (!$ok) {
       return false;
@@ -86,23 +74,19 @@ final class ProseLinter extends ArcanistExternalLinter {
 
     $results = json_decode($stdout, TRUE);
     $errors = (array)$results['data']['errors'];
-    
+
     if (empty($errors)) {
       return array();
     }
 
     $messages = array();
     foreach ($errors as $error) {
-      if (in_array($error['check'], $this->ignoredChecks)) {
-        continue;
-      }
-
       $message = id(new ArcanistLintMessage())
         ->setPath($path)
-        ->setLine($error['line'] + 1)
+        ->setLine($error['line'])
         ->setChar($error['column'])
         ->setCode($error['check'])
-        ->setSeverity(ArcanistLintSeverity::SEVERITY_ADVICE)
+        ->setSeverity($this->getLintMessageSeverity($error['check']))
         ->setName('proselint violoation')
         ->setDescription($error['message']);
       $messages []= $message;

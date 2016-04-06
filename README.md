@@ -85,17 +85,17 @@ Feel free to change the include/exclude regexes to suit your project's needs.
 
 ### Configuration options
 
-Checks can be ignored by listing them in "ignored-checks":
+Checks can be ignored by configuring their severity:
 
     {
       "prose": {
         "type": "prose",
         "include": "(\\.(md)$)",
-        "ignored-checks": [
-          "butterick.symbols.curly_quotes",
-          "butterick.symbols.ellipsis",
-          "leonard.exclamation.30ppm"
-        ]
+        "severity": {
+          "typography.symbols.curly_quotes": "disabled",
+          "typography.symbols.ellipsis": "disabled",
+          "leonard.exclamation.30ppm": "disabled"
+        }
       },
     }
 
