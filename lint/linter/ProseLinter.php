@@ -87,7 +87,7 @@ final class ProseLinter extends ArcanistExternalLinter {
         ->setChar($error['column'])
         ->setCode($error['check'])
         ->setSeverity($this->getLintMessageSeverity($error['check']))
-        ->setName('proselint violoation')
+        ->setName('proselint violation')
         ->setDescription($error['message']);
       $messages []= $message;
     }
