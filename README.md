@@ -9,7 +9,7 @@ prose-lint generates advice messages.
 
 Example output:
 
-    Advice  (misc.annotations) proselint violoation
+    Advice  (misc.annotations) proselint violation
     Annotation left in text.
     
               91 
@@ -18,7 +18,7 @@ Example output:
               94 
               95 
               
-    Advice  (garner.phrasal_adjectives.ly) proselint violoation
+    Advice  (garner.phrasal_adjectives.ly) proselint violation
     No hyphen is necessary in phrasal adjectives with an adverb ending in -ly.
     
               31 
