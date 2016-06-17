@@ -66,6 +66,15 @@ final class ProseLinter extends ArcanistExternalLinter {
   }
 
   protected function parseLinterOutput($path, $err, $stdout, $stderr) {
+    if ($err == 139) { // proselint 0.5.3 is segfaulting; treat it as a silent failure.
+      $message = id(new ArcanistLintMessage())
+        ->setPath($path)
+        ->setCode('segfault')
+        ->setSeverity($this->getLintMessageSeverity('segfault'))
+        ->setName('proselint segfaulted. See https://github.com/amperser/proselint/issues/487');
+      return array($message);
+    }
+
     $ok = ($err == 0 || $err == 1); // proselint returns 1 if linter warnings were detected.
 
     if (!$ok) {
@@ -87,7 +96,7 @@ final class ProseLinter extends ArcanistExternalLinter {
         ->setChar($error['column'])
         ->setCode($error['check'])
         ->setSeverity($this->getLintMessageSeverity($error['check']))
-        ->setName('proselint violoation')
+        ->setName('proselint violation')
         ->setDescription($error['message']);
       $messages []= $message;
     }
